@@ -9,8 +9,7 @@ for i in range(8):
     pagantes = ["Enzo", "André", "Samuel", "Belai", "Pedrão", "Alex", "Antônio", "Comunitária"]
     semana_inicio = int(inicio.strftime("%V"))
     data = datetime.datetime.now()
-    semana = int(data.strftime("%V"))
-
-    quem_paga = pagantes[(semana - semana_inicio) % len(pagantes)]
+    dia = data.strftime("%j")
+    quem_paga =
 
     print(quem_paga)
