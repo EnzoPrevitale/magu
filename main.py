@@ -18,7 +18,6 @@ def verificar_ciclos(quantidade):
         planilha["Pagante"].append(pagante)
 
     df = pd.DataFrame(planilha)
-    print(df)
     df.to_excel("coquinha.xlsx", sheet_name="escala", index=False)
 
     return df
@@ -38,8 +37,13 @@ while True:
             break
 
     if opcao == 1:
-        verificar_ciclos(int(input("Digite a quantidade de ciclos que deseja verificar: ")) * len(PAGANTES))
+        print(verificar_ciclos(int(input("Digite a quantidade de ciclos que deseja verificar: ")) * len(PAGANTES)))
     elif opcao == 2:
         for num in range(len(PAGANTES)):
             print(f"[{num + 1}] - {PAGANTES[num]}")
-        nome = int
+        nome = int(input("Escolha: "))
+        datas = verificar_ciclos(3 * len(PAGANTES))
+        datas_nome = datas[datas["Pagante"] == PAGANTES[nome - 1]]
+        print(datas_nome)
+        datas_nome.to_excel(f"coquinha_{PAGANTES[nome - 1]}.xlsx", sheet_name="escala", index=False)
+        break
