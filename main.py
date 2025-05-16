@@ -1,23 +1,45 @@
 import datetime
 import pandas as pd
 
-planilha = {
-    "Semana": [],
-    "Pagante": []
-}
-pagantes = ["Enzo", "Pedrão", "André", "Samuel", "Belai", "Pedrão", "Alex", "Antônio", "Comunitária"]
-inicio = datetime.datetime(2025,4,4)
-semana_inicio = int(inicio.strftime("%V"))
-ciclos = int(input("Digite a quantidade de ciclos que deseja verificar: ")) * len(pagantes)
 
-for i in range(ciclos):
-    data = datetime.datetime.now() + datetime.timedelta(i * 7)
-    pagante = pagantes[(int(data.strftime("%V")) + 1 - semana_inicio) % len(pagantes)]
-    dia = f"{data.strftime('%d')}/{data.strftime('%m')}"
+def verificar_ciclos(quantidade):
+    planilha = {
+        "Semana": [],
+        "Pagante": []
+    }
 
-    planilha["Semana"].append(dia)
-    planilha["Pagante"].append(pagante)
+    for i in range(quantidade):
+        data = datetime.datetime.now() + datetime.timedelta(i * 7)
+        data += datetime.timedelta(5 - int(data.strftime('%w')))
+        pagante = PAGANTES[(int(data.strftime("%V")) - SEMANA_INICIO) % len(PAGANTES)]
+        dia = f"{data.strftime('%d')}/{data.strftime('%m')}"
 
-df = pd.DataFrame(planilha)
-print(df)
-df.to_excel("coquinha.xlsx", sheet_name="escala", index = False)
+        planilha["Semana"].append(dia)
+        planilha["Pagante"].append(pagante)
+
+    df = pd.DataFrame(planilha)
+    print(df)
+    df.to_excel("coquinha.xlsx", sheet_name="escala", index=False)
+
+    return df
+
+
+INICIO = datetime.datetime(2025, 4, 4)
+SEMANA_INICIO = int(INICIO.strftime("%V"))
+
+PAGANTES = ("Papa Doutor XIX", "Papa Botton III", "Papa Joelho VII", "Papa Magu XXI", "Papa Ca***a XI", "Papa Fernandão XVI", "Papa Todas XV", "Conclave")
+
+print("[1] - Verificar próximas datas | [2] - Verificar por nome")
+
+while True:
+    while True:
+        opcao = int(input("Escolha: "))
+        if 2 >= opcao >= 1:
+            break
+
+    if opcao == 1:
+        verificar_ciclos(int(input("Digite a quantidade de ciclos que deseja verificar: ")) * len(PAGANTES))
+    elif opcao == 2:
+        for num in range(len(PAGANTES)):
+            print(f"[{num + 1}] - {PAGANTES[num]}")
+        nome = int
