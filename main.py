@@ -18,7 +18,7 @@ def verificar_ciclos(quantidade):
         planilha["Pagante"].append(pagante)
 
     df = pd.DataFrame(planilha)
-    df.to_excel("coquinha.xlsx", sheet_name="escala", index=False)
+    #df.to_excel("coquinha.xlsx", sheet_name="escala", index=False)
 
     return df
 
@@ -26,7 +26,7 @@ def verificar_ciclos(quantidade):
 INICIO = datetime.datetime(2025, 4, 4)
 SEMANA_INICIO = int(INICIO.strftime("%V"))
 
-PAGANTES = ("Papa Doutor XIX", "Papa Botton III", "Papa Joelho VII", "Papa Magu XXI", "Papa Ca***a XI", "Papa Fernandão XVI", "Papa Todas XV", "Conclave")
+PAGANTES = ("Papa Doutor XIX", "Papa Botton III", "Papa Joelho VII", "Papa Magu XXI", "Papa Casada XI", "Papa Fernandão XVI", "Papa Todas XV", "Conclave")
 
 print("[1] - Verificar próximas datas | [2] - Verificar por nome")
 
@@ -45,5 +45,5 @@ while True:
         datas = verificar_ciclos(3 * len(PAGANTES))
         datas_nome = datas[datas["Pagante"] == PAGANTES[nome - 1]]
         print(datas_nome)
-        datas_nome.to_excel(f"coquinha_{PAGANTES[nome - 1]}.xlsx", sheet_name="escala", index=False)
+        #datas_nome.to_excel(f"coquinha_{PAGANTES[nome - 1]}.xlsx", sheet_name="escala", index=False)
         break
