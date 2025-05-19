@@ -18,7 +18,7 @@ def verificar_ciclos(quantidade):
         planilha["Pagante"].append(pagante)
 
     df = pd.DataFrame(planilha)
-    #df.to_excel("coquinha.xlsx", sheet_name="escala", index=False)
+    df.to_excel("coquinha.xlsx", sheet_name="escala", index=False)
 
     return df
 
@@ -45,5 +45,5 @@ while True:
         datas = verificar_ciclos(3 * len(PAGANTES))
         datas_nome = datas[datas["Pagante"] == PAGANTES[nome - 1]]
         print(datas_nome)
-        #datas_nome.to_excel(f"coquinha_{PAGANTES[nome - 1]}.xlsx", sheet_name="escala", index=False)
+        datas_nome.to_excel(f"coquinha_{PAGANTES[nome - 1]}.xlsx", sheet_name="escala", index=False)
         break
