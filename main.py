@@ -42,6 +42,7 @@ while True:
 
     if opcao == 1:
         print(verificar_ciclos(int(input("Digite a quantidade de ciclos que deseja verificar: ")) * len(PAGANTES)))
+        break
     elif opcao == 2:
         for num in range(len(PAGANTES)):
             print(f"[{num + 1}] - {PAGANTES[num]}")
