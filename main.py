@@ -41,7 +41,19 @@ while True:
             break
 
     if opcao == 1:
-        print(verificar_ciclos(int(input("Digite a quantidade de ciclos que deseja verificar: ")) * len(PAGANTES)))
+        ciclos_verificados = int(input("Digite a quantidade de ciclos que deseja verificar: ")) * len(PAGANTES)
+        proximas_datas = verificar_ciclos(ciclos_verificados)
+        print(proximas_datas)
+        data_conclave = proximas_datas[proximas_datas["Pagante"] == "Conclave"]["Semana"].values[0]
+        if data_conclave.split("/")[1] == '01' and datetime.datetime.now().strftime("%m") == '12':
+            ano = int(datetime.datetime.now().strftime("%Y")) + 1
+        else:
+            ano = int(datetime.datetime.now().strftime("%Y"))
+        dia_conclave = datetime.datetime(ano, int(data_conclave.split("/")[1]), int(data_conclave.split("/")[0]))
+
+        dias_para_conclave = (dia_conclave - datetime.datetime.now()).days + 1
+        print(f"{dias_para_conclave} dias até"
+              f" o próximo conclave.")
         break
     elif opcao == 2:
         for num in range(len(PAGANTES)):
