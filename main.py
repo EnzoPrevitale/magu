@@ -1,4 +1,5 @@
 import datetime
+import random
 import pandas as pd
 
 
@@ -32,12 +33,12 @@ SEMANA_INICIO = int(INICIO.strftime("%V"))
 
 PAGANTES = ("Papa Doutor XIX", "Papa Botton III", "Papa Joelho VII", "Papa Magu XXI", "Papa Casada XI", "Papa Fernandão XVI", "Papa Todas XV", "Conclave")
 
-print("[1] - Verificar próximas datas | [2] - Verificar por nome")
+print("[1] - Verificar próximas datas | [2] - Verificar por nome | [3] - Sortear novo ciclo")
 
 while True:
     while True:
         opcao = int(input("Escolha: "))
-        if 2 >= opcao >= 1:
+        if 3 >= opcao >= 1:
             break
 
     if opcao == 1:
@@ -76,5 +77,9 @@ while True:
               f"Cocas pagas: {proximo_ciclo - 1}\n"
               f"Valor total estimado: R${valor_total_estimado}"
               )
+        break
+    elif opcao == 3:
+        pagantes_novo = random.sample(PAGANTES, len(PAGANTES))
+        print(pagantes_novo)
         break
 
