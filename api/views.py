@@ -9,6 +9,7 @@ from .models import *
 from .serializers import *
 
 from coca import *
+import random
 
 @api_view(["GET", "POST"])
 def pagante_list(request):
@@ -57,4 +58,20 @@ def magu_list(request):
         response["Content-Type"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         response['Content-Disposition'] = f'attachment; filename="{filename}"'
         return response
+
+@api_view(["POST"])
+def sortear_magu(request):
+    if request.method == "POST":
+        pagantes = list(Pagante.objects.all())
+        nums = []
+        for i in range(len(pagantes)):
+            nums.append(i + 1)
+        for i in pagantes:
+            num = random.choice(nums)
+            nums.remove(num)
+            i.id = num
+            i.save()
+        pagantes_novo = Pagante.objects.all()
+        serializers = PaganteSerializer(pagantes_novo)
+        return Response(serializers.data)
 

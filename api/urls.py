@@ -7,4 +7,5 @@ urlpatterns = [
     path("pagantes", pagante_list),
     path("pagantes/<int:pk>", pagante_detail),
     path("magu", magu_list),
+    path("sortear", sortear_magu),
 ]
