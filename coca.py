@@ -25,7 +25,7 @@ def verificar_ciclos(quantidade: int, pagantes: list):
         planilha["Pagante"].append(pagante)
 
     df = pd.DataFrame(planilha)
-    df.to_excel("exports/coquinha.xlsx", sheet_name="escala", index=False)
+    df.to_excel("./exports/coquinha.xlsx", sheet_name="escala", index=False)
 
     return df
 
@@ -51,7 +51,7 @@ def obter_por_nome(pagantes: list, nome: str):
     datas_nome = datas[datas["Pagante"] == nome]
 
     print(datas_nome)
-    datas_nome.to_excel(f"coquinha_{nome}.xlsx", sheet_name="escala", index=False)
+    datas_nome.to_excel(f"./exports/coquinha_{nome}.xlsx", sheet_name="escala", index=False)
 
     proxima_semana = (datas_nome[datas_nome['Ciclo'] == min(list(datas_nome['Ciclo']))])["Semana"].values[0]
     proximo_ciclo = (datas_nome[datas_nome['Ciclo'] == min(list(datas_nome['Ciclo']))])["Ciclo"].values[0]

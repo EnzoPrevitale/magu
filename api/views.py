@@ -54,7 +54,7 @@ def magu_list(request):
         verificar_ciclos(1, nomes_pagantes)
 
         filename = "coquinha.xlsx"
-        response = FileResponse(open(f"exports/{filename}", "rb"))
+        response = FileResponse(open(f"./exports/{filename}", "rb"))
         response["Content-Type"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         response['Content-Disposition'] = f'attachment; filename="{filename}"'
         return response
