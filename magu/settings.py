@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +27,8 @@ SECRET_KEY = 'django-insecure-l17%eh2z5dc1f%!0o!ff26l2g#5)5t!1mls2@k$4x%dc%u0)(7
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "nilsonnelson.pythonanywhere.com"
+    "127.0.0.1",
+    "nilsonnelson.pythonanywhere.com",
 ]
 
 
@@ -52,6 +54,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),
+}
 
 ROOT_URLCONF = 'magu.urls'
 
