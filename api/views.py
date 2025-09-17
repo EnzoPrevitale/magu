@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
+from django.db import transaction
 from .models import *
 from .serializers import *
 
@@ -45,7 +46,7 @@ def pagante_detail(request, pk):
 @api_view(["GET"])
 def magu_list(request):
     if request.method == "GET":
-        pagantes = Pagante.objects.all()
+        pagantes = Pagante.objects.all().order_by("ordem")
         serializer = PaganteSerializer(pagantes, many=True)
         nomes_pagantes = []
         for i in serializer.data:
@@ -74,15 +75,20 @@ def conclave_data(request):
 def sortear_magu(request):
     if request.method == "POST":
         pagantes = list(Pagante.objects.all())
-        nums = []
-        for i in range(len(pagantes)):
-            nums.append(i + 1)
-        for i in pagantes:
-            num = random.choice(nums)
-            nums.remove(num)
-            i.id = num
-            i.save()
-        pagantes_novo = Pagante.objects.all()
-        serializers = PaganteSerializer(pagantes_novo)
+        random.shuffle(pagantes)
+
+        with transaction.atomic():
+            for p in range(len(pagantes)):
+                pagantes[p].ordem = p + len(pagantes) + 1
+                print("Primeira", pagantes[p].ordem)
+            Pagante.objects.bulk_update(pagantes, ["ordem"])
+
+            for i, p in enumerate(pagantes, start=1):
+                p.ordem = i
+                print(p.ordem)
+
+            Pagante.objects.bulk_update(pagantes, ["ordem"])
+
+        serializers = PaganteSerializer(Pagante.objects.all().order_by("ordem"), many=True)
         return Response(serializers.data)
 
