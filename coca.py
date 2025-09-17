@@ -12,14 +12,13 @@ def verificar_ciclos(quantidade: int, pagantes: list):
         "Semana": [],
         "Pagante": []
     }
-
-    for i in range(quantidade):
+    for i in range(quantidade*len(pagantes)):
         data = datetime.datetime.now() + datetime.timedelta(i * 7)
         data += datetime.timedelta(5 - int(data.strftime('%w')))
 
-        pagante = pagantes[(int(data.strftime("%V")) - SEMANA_INICIO) % len(PAGANTES)]
+        pagante = pagantes[(int(data.strftime("%V")) - SEMANA_INICIO) % len(pagantes)]
         dia = f"{data.strftime('%d')}/{data.strftime('%m')}"
-        ciclos = (data - INICIO).days // (7 * len(PAGANTES)) + 1
+        ciclos = (data - INICIO).days // (7 * len(pagantes)) + 1
 
         planilha["Ciclo"].append(ciclos)
         planilha["Semana"].append(dia)

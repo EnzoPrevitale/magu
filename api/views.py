@@ -49,6 +49,7 @@ def magu_list(request):
         nomes_pagantes = []
         for i in serializer.data:
             nomes_pagantes.append(i["nome"])
+        nomes_pagantes.append("Conclave")
         verificar_ciclos(4, nomes_pagantes)
 
         filename = "coquinha.xlsx"
