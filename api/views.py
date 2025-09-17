@@ -3,9 +3,12 @@ from .serializers import *
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from .models import *
 from .serializers import *
+
+from coca import *
 
 @api_view(["GET", "POST"])
 def pagante_list(request):
@@ -37,3 +40,20 @@ def pagante_detail(request, pk):
         pagante.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+@api_view(["GET"])
+def magu_list(request):
+    if request.method == "GET":
+        pagantes = Pagante.objects.all()
+        serializer = PaganteSerializer(pagantes, many=True)
+        nomes_pagantes = []
+        for i in serializer.data:
+            nomes_pagantes.append(i["nome"])
+        verificar_ciclos(4, nomes_pagantes)
+
+        filename = "coquinha.xlsx"
+        response = FileResponse(open(f"exports/{filename}", "rb"))
+        response["Content-Type"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        return response
+

@@ -4,6 +4,7 @@ from rest_framework.routers import DefaultRouter
 from .views import *
 
 urlpatterns = [
-    path("pagantes/", pagante_list),
+    path("pagantes", pagante_list),
     path("pagantes/<int:pk>", pagante_detail),
+    path("magu", magu_list),
 ]
