@@ -36,3 +36,4 @@ def pagante_detail(request, pk):
     elif request.method == "DELETE":
         pagante.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
