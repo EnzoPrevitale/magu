@@ -8,4 +8,5 @@ urlpatterns = [
     path("pagantes/<int:pk>", pagante_detail),
     path("magu", magu_list),
     path("sortear", sortear_magu),
+    path("conclave", conclave_data),
 ]

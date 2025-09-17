@@ -51,13 +51,24 @@ def magu_list(request):
         for i in serializer.data:
             nomes_pagantes.append(i["nome"])
         nomes_pagantes.append("Conclave")
-        verificar_ciclos(4, nomes_pagantes)
+        verificar_ciclos(1, nomes_pagantes)
 
         filename = "coquinha.xlsx"
         response = FileResponse(open(f"exports/{filename}", "rb"))
         response["Content-Type"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         response['Content-Disposition'] = f'attachment; filename="{filename}"'
         return response
+    
+@api_view(["GET"])
+def conclave_data(request):
+    pagantes = Pagante.objects.all()
+    serializer = PaganteSerializer(pagantes, many=True)
+    nomes_pagantes = []
+    for i in serializer.data:
+        nomes_pagantes.append(i["nome"])
+    nomes_pagantes.append("Conclave")
+    return Response(obter_dados_conclave(nomes_pagantes))
+
 
 @api_view(["POST"])
 def sortear_magu(request):

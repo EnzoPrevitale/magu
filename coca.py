@@ -29,7 +29,37 @@ def verificar_ciclos(quantidade: int, pagantes: list):
 
     return df
 
-PAGANTES = ("Papa Doutor XIX", "Papa Botton III", "Papa Joelho VII", "Papa Magu XXI", "Papa Casada XI", "Papa Fernandão XVI", "Papa Todas XV", "Conclave")
+def obter_dados_conclave(pagantes: list):
+    proximas_datas = verificar_ciclos(1, pagantes)
+    data_conclave = proximas_datas[proximas_datas["Pagante"] == "Conclave"]["Semana"].values[0]
+    if data_conclave.split("/")[1] == '01' and datetime.datetime.now().strftime("%m") == '12':
+        ano = int(datetime.datetime.now().strftime("%Y")) + 1
+    else:
+        ano = int(datetime.datetime.now().strftime("%Y"))
+    dia_conclave = datetime.datetime(ano, int(data_conclave.split("/")[1]), int(data_conclave.split("/")[0]))
+
+    dias_para_conclave = (dia_conclave - datetime.datetime.now()).days + 1
+    return {
+        "dia_conclave": dia_conclave,
+        "dias_para_conclave": dias_para_conclave
+    }
+
+def obter_por_nome(pagantes: list, nome: str):
+
+    nome = pagantes[int(input("Escolha: ")) - 1]
+    datas = verificar_ciclos(3 * len(pagantes))
+    datas_nome = datas[datas["Pagante"] == nome]
+
+    print(datas_nome)
+    datas_nome.to_excel(f"coquinha_{nome}.xlsx", sheet_name="escala", index=False)
+
+    proxima_semana = (datas_nome[datas_nome['Ciclo'] == min(list(datas_nome['Ciclo']))])["Semana"].values[0]
+    proximo_ciclo = (datas_nome[datas_nome['Ciclo'] == min(list(datas_nome['Ciclo']))])["Ciclo"].values[0]
+    valor_total_estimado = f"{((proximo_ciclo - 1) * 14):.2f}".replace('.', ',')
+    return {
+            "proxima semana": proxima_semana
+    }
+
 
 if __name__ == "__main__":
     print("[1] - Verificar próximas datas | [2] - Verificar por nome | [3] - Sortear novo ciclo")
