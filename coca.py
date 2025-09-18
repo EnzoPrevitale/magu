@@ -5,7 +5,7 @@ import os
 from django.conf import settings
 
 export_dir = os.path.join(settings.BASE_DIR, "exports")
-os.makedir(export_dir, exist_ok=True)
+os.makedirs(export_dir, exist_ok=True)
 
 INICIO = datetime.datetime(2025, 8, 15)
 SEMANA_INICIO = int(INICIO.strftime("%V"))
