@@ -1,9 +1,13 @@
 import datetime
 import random
 import pandas as pd
+import os
+from django.conf import settings
 
+export_dir = os.path.join(settings.BASE_DIR, "exports")
+os.makedir(export_dir, exist_ok=True)
 
-INICIO = datetime.datetime(2025, 4, 4)
+INICIO = datetime.datetime(2025, 8, 15)
 SEMANA_INICIO = int(INICIO.strftime("%V"))
 
 def verificar_ciclos(quantidade: int, pagantes: list):
@@ -25,7 +29,9 @@ def verificar_ciclos(quantidade: int, pagantes: list):
         planilha["Pagante"].append(pagante)
 
     df = pd.DataFrame(planilha)
-    df.to_excel("./exports/coquinha.xlsx", sheet_name="escala", index=False)
+
+    arquivo = os.path.join(export_dir, "coquinha.xlsx")
+    df.to_excel(arquivo, sheet_name="escala", index=False)
 
     return df
 
@@ -51,7 +57,8 @@ def obter_por_nome(pagantes: list, nome: str):
     datas_nome = datas[datas["Pagante"] == nome]
 
     print(datas_nome)
-    datas_nome.to_excel(f"./exports/coquinha_{nome}.xlsx", sheet_name="escala", index=False)
+    arquivo = os.path.join(export_dir, f"coquinha{nome}.xlsx")
+    datas_nome.to_excel(arquivo, sheet_name="escala", index=False)
 
     proxima_semana = (datas_nome[datas_nome['Ciclo'] == min(list(datas_nome['Ciclo']))])["Semana"].values[0]
     proximo_ciclo = (datas_nome[datas_nome['Ciclo'] == min(list(datas_nome['Ciclo']))])["Ciclo"].values[0]
