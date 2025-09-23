@@ -51,21 +51,18 @@ def obter_dados_conclave(pagantes: list):
     }
 
 def obter_por_nome(pagantes: list, nome: str):
-
-    nome = pagantes[int(input("Escolha: ")) - 1]
-    datas = verificar_ciclos(3 * len(pagantes))
-    datas_nome = datas[datas["Pagante"] == nome]
-
+    datas = verificar_ciclos(5 * len(pagantes), pagantes)
+    print(datas["Pagante"] == "Enzo")
+    datas_nome = datas[datas["Pagante"].str.lower().str.strip() == nome.lower().strip()]
     print(datas_nome)
-    arquivo = os.path.join(export_dir, f"coquinha{nome}.xlsx")
-    datas_nome.to_excel(arquivo, sheet_name="escala", index=False)
+
+    #arquivo = os.path.join(export_dir, f"coquinha{nome}.xlsx")
+    #datas_nome.to_excel(arquivo, sheet_name="escala", index=False)
 
     proxima_semana = (datas_nome[datas_nome['Ciclo'] == min(list(datas_nome['Ciclo']))])["Semana"].values[0]
     proximo_ciclo = (datas_nome[datas_nome['Ciclo'] == min(list(datas_nome['Ciclo']))])["Ciclo"].values[0]
-    valor_total_estimado = f"{((proximo_ciclo - 1) * 14):.2f}".replace('.', ',')
-    return {
-            "proxima semana": proxima_semana
-    }
+
+    return datas_nome.to_json()
 
 
 if __name__ == "__main__":

@@ -1,18 +1,20 @@
 from .models import *
 from .serializers import *
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 from .models import *
 from .serializers import *
+from rest_framework.permissions import IsAuthenticated
 
 from coca import *
 import random
 
-@api_view(["GET", "POST"])
+@api_view(["GET", "POST"]) # /pagantes
+#@permission_classes([IsAuthenticated])
 def pagante_list(request):
     if request.method == "GET":
         pagantes = Pagante.objects.all()
@@ -25,7 +27,8 @@ def pagante_list(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-@api_view(["GET", "PATCH", "DELETE"])
+@api_view(["GET", "PATCH", "DELETE"]) # /pagantes
+#@permission_classes([IsAuthenticated])
 def pagante_detail(request, pk):
     pagante = get_object_or_404(Pagante, pk=pk)
 
@@ -43,7 +46,8 @@ def pagante_detail(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-@api_view(["GET"])
+@api_view(["GET"]) # /magu
+#@permission_classes([IsAuthenticated])
 def magu_list(request):
     if request.method == "GET":
         pagantes = Pagante.objects.all().order_by("ordem")
@@ -60,7 +64,8 @@ def magu_list(request):
         response['Content-Disposition'] = f'attachment; filename="{filename}"'
         return response
     
-@api_view(["GET"])
+@api_view(["GET"]) # /conclave
+#@permission_classes([IsAuthenticated])
 def conclave_data(request):
     pagantes = Pagante.objects.all()
     serializer = PaganteSerializer(pagantes, many=True)
@@ -71,7 +76,8 @@ def conclave_data(request):
     return Response(obter_dados_conclave(nomes_pagantes))
 
 
-@api_view(["POST"])
+@api_view(["POST"]) # /sortear
+#@permission_classes([IsAuthenticated])
 def sortear_magu(request):
     if request.method == "POST":
         pagantes = list(Pagante.objects.all())
@@ -80,15 +86,19 @@ def sortear_magu(request):
         with transaction.atomic():
             for p in range(len(pagantes)):
                 pagantes[p].ordem = p + len(pagantes) + 1
-                print("Primeira", pagantes[p].ordem)
             Pagante.objects.bulk_update(pagantes, ["ordem"])
 
             for i, p in enumerate(pagantes, start=1):
                 p.ordem = i
-                print(p.ordem)
 
             Pagante.objects.bulk_update(pagantes, ["ordem"])
 
         serializers = PaganteSerializer(Pagante.objects.all().order_by("ordem"), many=True)
         return Response(serializers.data)
 
+@api_view(["GET"]) # /magu/{nome}
+#@permission_classes([IsAuthenticated])
+def magu_nome(request, nome):
+    pagantes = list(Pagante.objects.all())
+    serializers = PaganteSerializer(data=request.data)
+    data = obter_por_nome(pagantes, nome)

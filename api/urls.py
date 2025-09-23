@@ -9,4 +9,5 @@ urlpatterns = [
     path("magu/", magu_list),
     path("sortear/", sortear_magu),
     path("conclave/", conclave_data),
+    path("magu/<str:nome>/", magu_nome),
 ]
