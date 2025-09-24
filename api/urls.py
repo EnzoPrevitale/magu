@@ -10,4 +10,6 @@ urlpatterns = [
     path("sortear/", sortear_magu),
     path("conclave/", conclave_data),
     path("magu/<str:nome>/", magu_nome),
+    path("magu/download", download_data),
+    path("magu/download/<str:nome>", download_nome),
 ]

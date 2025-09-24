@@ -56,13 +56,15 @@ def magu_list(request):
         for i in serializer.data:
             nomes_pagantes.append(i["nome"])
         nomes_pagantes.append("Conclave")
-        verificar_ciclos(1, nomes_pagantes)
+        return Response(verificar_ciclos(1, nomes_pagantes))
 
-        filename = "coquinha.xlsx"
-        response = FileResponse(open(f"./exports/{filename}", "rb"))
-        response["Content-Type"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        response['Content-Disposition'] = f'attachment; filename="{filename}"'
-        return response
+@api_view(["GET"])
+def download_data(r):
+    filename = "coquinha.xlsx"
+    response = FileResponse(open(f"./exports/{filename}", "rb"))
+    response["Content-Type"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    return response
     
 @api_view(["GET"]) # /conclave
 #@permission_classes([IsAuthenticated])
@@ -99,6 +101,18 @@ def sortear_magu(request):
 @api_view(["GET"]) # /magu/{nome}
 #@permission_classes([IsAuthenticated])
 def magu_nome(request, nome):
-    pagantes = list(Pagante.objects.all())
-    serializers = PaganteSerializer(data=request.data)
-    data = obter_por_nome(pagantes, nome)
+    pagantes = Pagante.objects.all()
+    serializers = PaganteSerializer(pagantes, many=True)
+    nomes = []
+    for i in list(serializers.data):
+        nomes.append(i["nome"])
+    data = obter_por_nome(nomes, nome)
+    return Response(data)
+
+@api_view(["GET"])
+def download_nome(r, nome):
+    filename = f"coquinha{nome}.xlsx"
+    response = FileResponse(open(f"./exports/{filename}", "rb"))
+    response["Content-Type"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    return response

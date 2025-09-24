@@ -3,6 +3,7 @@ import random
 import pandas as pd
 import os
 from django.conf import settings
+import re
 
 export_dir = os.path.join(settings.BASE_DIR, "exports")
 os.makedirs(export_dir, exist_ok=True)
@@ -33,7 +34,7 @@ def verificar_ciclos(quantidade: int, pagantes: list):
     arquivo = os.path.join(export_dir, "coquinha.xlsx")
     df.to_excel(arquivo, sheet_name="escala", index=False)
 
-    return df
+    return df.to_dict()
 
 def obter_dados_conclave(pagantes: list):
     proximas_datas = verificar_ciclos(1, pagantes)
@@ -51,66 +52,23 @@ def obter_dados_conclave(pagantes: list):
     }
 
 def obter_por_nome(pagantes: list, nome: str):
-    datas = verificar_ciclos(5 * len(pagantes), pagantes)
-    print(datas["Pagante"] == "Enzo")
-    datas_nome = datas[datas["Pagante"].str.lower().str.strip() == nome.lower().strip()]
+    datas = pd.read_excel(f"{export_dir}/coquinha.xlsx")
+    mask = datas["Pagante"].fillna("").astype(str).apply(
+    lambda x: re.sub(r"\s+", "", x, flags=re.UNICODE).casefold() == "enzo"
+    )
+
+    datas_nome = datas[mask]
+
     print(datas_nome)
 
-    #arquivo = os.path.join(export_dir, f"coquinha{nome}.xlsx")
-    #datas_nome.to_excel(arquivo, sheet_name="escala", index=False)
+    arquivo = os.path.join(export_dir, f"coquinha{nome}.xlsx")
+    datas_nome.to_excel(arquivo, sheet_name="escala", index=False)
 
     proxima_semana = (datas_nome[datas_nome['Ciclo'] == min(list(datas_nome['Ciclo']))])["Semana"].values[0]
     proximo_ciclo = (datas_nome[datas_nome['Ciclo'] == min(list(datas_nome['Ciclo']))])["Ciclo"].values[0]
 
-    return datas_nome.to_json()
-
-
-if __name__ == "__main__":
-    print("[1] - Verificar próximas datas | [2] - Verificar por nome | [3] - Sortear novo ciclo")
-    while True:
-        while True:
-            opcao = int(input("Escolha: "))
-            if 3 >= opcao >= 1:
-                break
-
-        if opcao == 1:
-            ciclos_verificados = int(input("Digite a quantidade de ciclos que deseja verificar: ")) * len(PAGANTES)
-            proximas_datas = verificar_ciclos(ciclos_verificados)
-            print(proximas_datas)
-            data_conclave = proximas_datas[proximas_datas["Pagante"] == "Conclave"]["Semana"].values[0]
-            if data_conclave.split("/")[1] == '01' and datetime.datetime.now().strftime("%m") == '12':
-                ano = int(datetime.datetime.now().strftime("%Y")) + 1
-            else:
-                ano = int(datetime.datetime.now().strftime("%Y"))
-            dia_conclave = datetime.datetime(ano, int(data_conclave.split("/")[1]), int(data_conclave.split("/")[0]))
-
-            dias_para_conclave = (dia_conclave - datetime.datetime.now()).days + 1
-            print(f"{dias_para_conclave} dias até"
-                f" o próximo conclave.")
-            break
-        elif opcao == 2:
-            for num in range(len(PAGANTES)):
-                print(f"[{num + 1}] - {PAGANTES[num]}")
-
-            nome = PAGANTES[int(input("Escolha: ")) - 1]
-            datas = verificar_ciclos(3 * len(PAGANTES))
-            datas_nome = datas[datas["Pagante"] == nome]
-
-            print(datas_nome)
-            datas_nome.to_excel(f"coquinha_{nome}.xlsx", sheet_name="escala", index=False)
-
-            proxima_semana = (datas_nome[datas_nome['Ciclo'] == min(list(datas_nome['Ciclo']))])["Semana"].values[0]
-            proximo_ciclo = (datas_nome[datas_nome['Ciclo'] == min(list(datas_nome['Ciclo']))])["Ciclo"].values[0]
-            valor_total_estimado = f"{((proximo_ciclo - 1) * 14):.2f}".replace('.', ',')
-
-            print(f"\n"
-                f"Informações de {nome}: \n"
-                f"Próxima semana: {proxima_semana}\n"
-                f"Cocas pagas: {proximo_ciclo - 1}\n"
-                f"Valor total estimado: R${valor_total_estimado}"
-                )
-            break
-        elif opcao == 3:
-            pagantes_novo = random.sample(PAGANTES, len(PAGANTES))
-            print(pagantes_novo)
-            break
+    return {
+        "proximaSemana": proxima_semana,
+        "proximoCiclo": proximo_ciclo,
+        "dados": datas_nome.to_dict()
+    }
